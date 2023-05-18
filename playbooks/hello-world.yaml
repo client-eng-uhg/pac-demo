@@ -1,0 +1,18 @@
+- hosts: localhost
+  connection: local
+  vars:
+    policy_as_code_plan_validation_url: "http://localhost:8181/v1/data/corp/policies"
+
+  tasks:    
+    - name: Hello World to OPA
+      ansible.builtin.uri:
+        url: "{{ policy_as_code_plan_validation_url }}"
+        method: POST
+        body: '{"input": { "tfplan": {"resource_changes": [{"address":"ibm_cloudant.cloudant","type":"ibm_cloudant","change":{ "after":{ "tags":[ "costcenter:011"]} } }] } } }'
+        body_format: json
+      check_mode: no
+      register: validation_response
+
+    - name: Print response
+      debug:
+        msg: "{{ validation_response }}"

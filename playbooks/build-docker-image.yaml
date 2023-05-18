@@ -1,0 +1,45 @@
+- hosts: localhost
+  connection: local
+  vars:
+    git_clone_path: '/tmp/ansible-pac-test'
+    git_repo_https_clone_url: ""
+    git_clone_path_branch: ""
+
+  tasks:
+    - name: Clone Git repo
+      git:
+        repo: "{{ git_repo_https_clone_url }}"
+        dest: "{{ git_clone_path }}"
+        clone: yes
+        force: yes
+        single_branch: yes
+        version: "{{ git_clone_path_branch }}"
+      check_mode: no
+    
+    - name: Install a Docker SDK for Python
+      ansible.builtin.yum:
+        name:
+          - python-docker-py
+        state: present
+    
+    # - name: create build directory
+    #   file:
+    #     path: 
+    #     state: directory
+    #     owner: root
+    #     group: root
+    #     mode: '0755'
+    # - name: copy Dockerfile
+    #   copy:
+    #     src: ./Dockerfile
+    #     dest: /root/demo-dockerfile/Dockerfile
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    - name: build container image
+      docker_image:
+        name: opa-policies:main
+        build:
+          path: ./policies
+          source: build
+        state: present
