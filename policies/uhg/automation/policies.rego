@@ -38,11 +38,14 @@ policy_violations[UHG_ATMN_00001_violation] {
 
 
     # get the set of approved devices and check against the approved device set
-    approved_devices := { device_index |
-        approved_list := device_attributes[device_index]
-    }
+    # approved_devices := { device_index |
+    #     approved_list := device_attributes[device_index]
+    # }
     # device_attributes[device_name]
-    approved_devices != APPROVED_DEVICE_NAME
+    # approved_devices != APPROVED_DEVICE_NAME
+    
+    # check if the device_name is not in the set of approved devices
+    not APPROVED_DEVICE_NAME[device_name]
 
     # create a violation if device does not have listed in the approved device
     UHG_ATMN_00001_violation := new_violation(
