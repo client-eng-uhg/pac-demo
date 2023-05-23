@@ -35,14 +35,6 @@ policy_violations[UHG_ATMN_00001_violation] {
     # loop through each device
     some device_index, device_name
     device_attributes := input.devices[device_index][device_name]
-
-
-    # get the set of approved devices and check against the approved device set
-    # approved_devices := { device_index |
-    #     approved_list := device_attributes[device_index]
-    # }
-    # device_attributes[device_name]
-    # approved_devices != APPROVED_DEVICE_NAME
     
     # check if the device_name is not in the set of approved devices
     not APPROVED_DEVICE_NAME[device_name]
@@ -56,3 +48,54 @@ policy_violations[UHG_ATMN_00001_violation] {
     )
 
 }
+
+
+
+# METADATA
+# title: UHG-ATMN-00002 - Prevent Device with specific name from running
+# description: >-
+#   The device is prevented from running this automation. Please change with approved device.
+# custom:
+#   level: FAIL
+UHG_ATMN_00002_id := "UHG-ATMN-00002"
+UHG_ATMN_00002_message := "The device is prevented from running this automation. Please change with approved device."
+UHG_ATMN_00002_playbook := "NOT_IMPLEMENTED"
+UHG_ATMN_00002_playbook_variables(device_attributes) := playbook_vars {
+    playbook_vars := {}
+}
+
+# add UHG_ATMN_00002 policy to policy set
+policies[policy_id] := policy {
+    policy_id := UHG_ATMN_00002_id
+    policy := {
+        "reason": UHG_ATMN_00002_message,
+        "level": LEVEL.FAIL,
+        "playbook": UHG_ATMN_00002_playbook
+    }
+}
+
+# add UHG_ATMN_00002 violations to violations list if any exist
+policy_violations[UHG_ATMN_00002_violation] {
+
+    #Approved Device Name
+    PREVENTED_DEVICE_NAME := {"wgsin710leaf05":{}, "wgsin710leaf06":{}}
+
+    # loop through each device
+    some device_index, device_name
+    device_attributes := input.devices[device_index][device_name]
+    
+    # check if the device_name is in the set of prevented devices
+    PREVENTED_DEVICE_NAME[device_name]
+
+    # create a violation if device does not have listed in the prevented device
+    UHG_ATMN_00002_violation := new_violation(
+        policies,
+        UHG_ATMN_00002_id,
+        device_name,
+        UHG_ATMN_00001_playbook_variables(device_attributes)
+    )
+
+}
+
+
+    #Adding policies to check the business rules around scheduler/business hours for any critical tasks
