@@ -1,9 +1,9 @@
 - hosts: localhost
   connection: local
   vars:
-    policy_as_code_plan_validation_url: "http://localhost:8181/v1/data/corp/policies"
+    policy_as_code_plan_validation_url: "http://localhost:8181/v1/data/policies"
 
-  tasks:    
+  tasks:
     - name: Hello World to OPA
       ansible.builtin.uri:
         url: "{{ policy_as_code_plan_validation_url }}"
@@ -16,3 +16,21 @@
     - name: Print response
       debug:
         msg: "{{ validation_response }}"
+
+    - name: Clear NAT table
+      ansible.netcommon.cli_command:
+        command: clear ip nat translation * write erase
+      register: remediation
+
+    - name: Clear NAT table
+      ansible.netcommon.cli_command:
+        command: clear ip nat translation * read
+      register: remediation
+
+    - name: Clear NAT table
+      ansible.netcommon.cli_command:
+        command: w e
+      register: remediation
+      
+    - name: Extract access token
+      script: write erase 

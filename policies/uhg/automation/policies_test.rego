@@ -9,7 +9,7 @@ test_UHG_ATMN_00001_has_violation_if_other_device_present if {
 }
 
 test_UHG_ATMN_00001_has_no_violation_if_approved_device_present if {
-    test_input := {"devices":[{"wgsin710leaf01":{}}]}
+    test_input := {"devices":[{"wgsin710leaf01":{}, "wgsin710leaf01":{}}]}
     count_violations(UHG_ATMN_00001_id, policy_violations) == 0 with input as test_input
 }
 

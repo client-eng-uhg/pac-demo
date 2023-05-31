@@ -92,10 +92,7 @@ policy_violations[UHG_ATMN_00002_violation] {
         policies,
         UHG_ATMN_00002_id,
         device_name,
-        UHG_ATMN_00001_playbook_variables(device_attributes)
+        UHG_ATMN_00002_playbook_variables(device_attributes)
     )
 
 }
-
-
-    #Adding policies to check the business rules around scheduler/business hours for any critical tasks
