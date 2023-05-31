@@ -1,4 +1,4 @@
 {
   "revision": "1",
-  "roots": ["uhg/helpers", "uhg/network/cisco_ios", "uhg/network/cisco_nx_os", "uhg/automation", "corp/policies"]
+  "roots": ["uhg/helpers", "uhg/network/cisco_ios", "uhg/network/cisco_nx_os", "uhg/automation"]
 }

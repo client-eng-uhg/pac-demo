@@ -35,6 +35,7 @@ test_UHG_NTWK_IOS_00002_has_no_violation_if_two_peers_in_synchonized_state if {
 
 test_UHG_NTWK_IOS_00002_has_violation_if_three_peers_in_unsynchonized_state if {
     test_input := {"devices":[{"stkal047a01a01":{"peer":{"10.90.40.105":{"local_mode":{"client":{"mode":"unsynchronized"}}},"10.7.136.103":{"local_mode":{"client":{"mode":"unsynchronized"}}},"127.0.0.1":{"local_mode":{"client":{"mode":"unsynchronized"}}}}}}]}
+    print("count violations inside ios :", count_violations(UHG_NTWK_IOS_00002_id, policy_violations)) with input as test_input
     count_violations(UHG_NTWK_IOS_00002_id, policy_violations) == 1 with input as test_input
 }
 

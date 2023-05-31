@@ -6,6 +6,7 @@ import future.keywords.in
 
 import data.uhg.helpers.LEVEL
 import data.uhg.helpers.new_violation
+import data.uhg.helpers.count_violations
 
 
 
@@ -105,30 +106,56 @@ policy_violations[UHG_ATMN_00002_violation] {
 }
 
 
-# ######################################################################################################
-# # METADATA
-# # title: UHG-ATMN-00003 - Runtime check for Block commands from the Ansible playbook
-# # description: >-
-# #   This command is not allowed, please use different command.
-# # custom:
-# #   level: DENY
+######################################################################################################
+# METADATA
+# title: UHG-ATMN-00003 - Runtime check for Block commands from the Ansible playbook
+# description: >-
+#   This command is not allowed, please use different command.
+# custom:
+#   level: FAIL
+UHG_ATMN_00003_id := "UHG-ATMN-00003"
+UHG_ATMN_00003_message := "The device is prevented from running this automation. Please change with approved device."
+UHG_ATMN_00003_playbook := "NOT_IMPLEMENTED"
+UHG_ATMN_00003_playbook_variables(device_attributes) := playbook_vars {
+    playbook_vars := {}
+}
 
-# # List of Blocked commands during check-in
-# BLOCKED_COMMANDS = [
-#   "write erase",
-#   "w e"
-# ]
+# add UHG_ATMN_00002 policy to policy set
+policies[policy_id] := policy {
+    policy_id := UHG_ATMN_00003_id
+    policy := {
+        "reason": UHG_ATMN_00003_message,
+        "level": LEVEL.FAIL,
+        "playbook": UHG_ATMN_00003_playbook
+    }
+}
 
-# deny_unapproved_commands contains msg if {
-#   some task in input.tasks
+policy_violations[UHG_ATMN_00003_violation] {
 
-#   # fetches the command string from ansible playbook under mentioned task
-#     command_name := task["ansible.netcommon.cli_command"].command
+    BLOCKED_COMMANDS := {"write erase", "w e"}
+    # [
+    # "write erase",
+    # "w e"
+    # ]
 
-#   # checks the command string with listed blocked commands
-#   contains(command_name, BLOCKED_COMMANDS[i]) = true
-#   denied_command := BLOCKED_COMMANDS[i]
+    some playbook_index, playbook_name
+    playbook_attributes := input.playbooks[playbook_index][playbook_name]
 
-#   # displays error message if the blocked commands are mentioned in the command string for the playbook execution
-#   msg := sprintf(" '%v' command is not allowed, please use different command", [denied_command])
-# }
+  # fetches the command string from ansible playbook under mentioned task
+    task := playbook_attributes.tasks[_]
+    command_name := task["ansible.netcommon.cli_command"].command
+
+     # checks the command string with listed blocked commands
+    blocked_command := BLOCKED_COMMANDS[_]
+    contains(command_name, blocked_command) = true
+
+    # create a violation if runtime check finds the blocked commands
+    UHG_ATMN_00003_violation := new_violation(
+        policies,
+        UHG_ATMN_00003_id,
+        playbook_name,
+        UHG_ATMN_00002_playbook_variables(playbook_attributes)
+    )
+    print("violation: ", UHG_ATMN_00003_violation)
+
+}
