@@ -133,16 +133,13 @@ policies[policy_id] := policy {
 policy_violations[UHG_ATMN_00003_violation] {
 
     BLOCKED_COMMANDS := {"write erase", "w e"}
-    # [
-    # "write erase",
-    # "w e"
-    # ]
 
     some playbook_index, playbook_name
     playbook_attributes := input.playbooks[playbook_index][playbook_name]
 
-  # fetches the command string from ansible playbook under mentioned task
-    task := playbook_attributes.tasks[_]
+    # fetches the command string from ansible playbook under mentioned task
+    some task_id
+    task := playbook_attributes.tasks[task_id]
     command_name := task["ansible.netcommon.cli_command"].command
 
      # checks the command string with listed blocked commands
@@ -153,9 +150,7 @@ policy_violations[UHG_ATMN_00003_violation] {
     UHG_ATMN_00003_violation := new_violation(
         policies,
         UHG_ATMN_00003_id,
-        playbook_name,
+        sprintf("Playbook %s : Task #%d", [playbook_name, task_id]),
         UHG_ATMN_00002_playbook_variables(playbook_attributes)
     )
-    print("violation: ", UHG_ATMN_00003_violation)
-
 }

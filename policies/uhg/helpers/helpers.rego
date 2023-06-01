@@ -7,9 +7,9 @@ LEVEL := {
 }
 
 # Function to create policy violations
-new_violation(policies, policy_id, device_name, playbook_variables) = v {
+new_violation(policies, policy_id, name, playbook_variables) = v {
   v := {
-    "name": device_name,
+    "name": name,
     "policy_id": policy_id,
     "reason": policies[policy_id].reason,
     "level": policies[policy_id].level,
