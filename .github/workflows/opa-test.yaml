@@ -1,4 +1,4 @@
-name: opa-test
+name: opa test
 
 on:
   pull_request:
