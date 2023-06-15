@@ -1,0 +1,18 @@
+name: github-comment
+
+on: [pull_request]
+
+jobs:
+  job1:
+    name: github-comment
+    runs-on: ubuntu-latest
+    steps:
+    - name: Post comments to GitHub
+      uses: pranjalpatil30/action-github-comment@v1
+      with:
+        body: |
+          text...
+          text...
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LOG: trace

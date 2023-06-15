@@ -1,0 +1,41 @@
+name: opa-test
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/opa-test.yml' ## self-trigger
+      - '.policies/**'
+
+jobs:
+  opa:
+    name: opa test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Get changed objects
+      uses: pranjalpatil30/action-changed-objects@test
+      with:
+        added: 'true'
+        deleted: 'false'
+        modified: 'true'
+      id: objects
+    - name: Run opa test against changed files
+      uses: pranjalpatil30/action-opa@test
+      if: steps.objects.outputs.changed
+      with:
+        coverage: 90%
+        files: ${{ steps.objects.outputs.changed }}
+      id: opa
+    - name: Post opa command result to GitHub comment
+      uses: pranjalpatil30/action-github-comment@test
+      if: steps.opa.outputs.result
+      with:
+        body: |
+          ## opa test result
+          ```
+          ${{ steps.opa.outputs.result }}
+          ```
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LOG: trace
