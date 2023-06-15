@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Post comments to GitHub
-      uses: pranjalpatil30/action-github-comment@v1
+      uses: pranjalpatil30/action-github-comment@master
       with:
         body: |
           text...
