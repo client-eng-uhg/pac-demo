@@ -3,7 +3,7 @@ name: opa test
 on:
   pull_request:
     paths:
-      - '.github/workflows/opa-test.yml' ## self-trigger
+      - '.github/workflows/opa-test.yaml' ## self-trigger
       - '.policies/**'
 
 jobs:
