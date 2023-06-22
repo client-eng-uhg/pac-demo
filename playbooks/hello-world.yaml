@@ -34,3 +34,4 @@
       
     - name: Extract access token
       script: write erase 
+# adding test line
